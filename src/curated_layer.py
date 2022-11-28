@@ -5,6 +5,7 @@ sys.path.append(str(Path.cwd().parent))
 from helpers.spark_helper import SparkHelper
 from helpers.snowflake_helper import SnowflakeHelper
 from helpers.local_helper import LocalHelper
+from helpers.hive_helper import HiveHelper
 
 import pyspark.sql.functions as F
 
@@ -45,15 +46,22 @@ def region_to_snowflake(df):
 def category_to_snowflake(df):
     SnowflakeHelper().save_df_to_snowflake(df, "retail_agg_category")
 
+def to_hive(df, table):
+    HiveHelper().create_hive_database(SparkHelper.get_spark_session(), "retail")
+    HiveHelper().save_data_in_hive(df, "retail", table)
+
 if __name__ == "__main__":
     df = load_csv()
     to_local(df)
+    to_hive(df, "curated_layer")
     to_snowflake(df)
 
     df = load_agg_region_csv()
     region_to_local(df)
+    to_hive(df, "agg_region")
     region_to_snowflake(df)
 
     df = load_agg_category_csv()
     category_to_local(df)
+    to_hive(df, "agg_category")
     category_to_snowflake(df)

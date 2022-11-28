@@ -5,6 +5,7 @@ sys.path.append(str(Path.cwd().parent))
 from helpers.spark_helper import SparkHelper
 from helpers.snowflake_helper import SnowflakeHelper
 from helpers.local_helper import LocalHelper
+from helpers.hive_helper import HiveHelper
 
 import pyspark.sql.functions as F
 
@@ -46,10 +47,15 @@ def load_csv():
 def to_local(df):
     LocalHelper.save_df_internal(df, r"outputs\cleansed_layer.csv")
 
+def to_hive(df):
+    HiveHelper().create_hive_database(SparkHelper.get_spark_session(), "retail")
+    HiveHelper().save_data_in_hive(df, "retail", "cleansed_layer")
+
 def to_snowflake(df):
     SnowflakeHelper().save_df_to_snowflake(df, "retail_cleansed_layer")
 
 if __name__ == "__main__":
     df = load_csv()
     to_local(df)
+    to_hive(df)
     to_snowflake(df)

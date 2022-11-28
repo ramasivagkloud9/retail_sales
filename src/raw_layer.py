@@ -5,6 +5,7 @@ sys.path.append(str(Path.cwd().parent))
 from helpers.spark_helper import SparkHelper
 from helpers.snowflake_helper import SnowflakeHelper
 from helpers.local_helper import LocalHelper
+from helpers.hive_helper import HiveHelper
 
 def load_csv():
     spark=SparkHelper.get_spark_session()
@@ -15,12 +16,17 @@ def load_csv():
 def to_local(df):
     LocalHelper.save_df_internal(df, r"outputs\raw_layer.csv")
 
+def to_hive(df):
+    HiveHelper().create_hive_database(SparkHelper.get_spark_session(), "retail")
+    HiveHelper().save_data_in_hive(df, "retail", "raw_layer")
+
 def to_snowflake(df):
     SnowflakeHelper().save_df_to_snowflake(df, "retail_raw_layer")
 
 if __name__=="__main__":
     df=load_csv()
     to_local(df)
+    to_hive(df)
     to_snowflake(df)
 # raw = spark.read.csv("/content/drive/MyDrive/Retail.csv", header=True)
 # raw.show()
