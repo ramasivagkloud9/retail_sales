@@ -1,0 +1,30 @@
+Category,Subcategory,OrderQuantity,SalesAmount
+Accessories,Helmets,7123.0,144722.67000000077
+Accessories,Bike Racks,1616.0,111875.21
+Accessories,Bottles and Cages,1447.0,4218.8899999999885
+Accessories,Cleaners,1352.0,6278.960000000003
+Accessories,Hydration Packs,1190.0,38375.320000000014
+Accessories,Pumps,632.0,7563.789999999985
+Accessories,Locks,617.0,9217.08
+Accessories,Tires and Tubes,379.0,519.8400000000003
+Bikes,Road Bikes,19153.0,1.4333100059999688E7
+Bikes,Mountain Bikes,12214.0,1.3955923610000597E7
+Bikes,Touring Bikes,6672.0,5352277.910000048
+Clothing,Jerseys,10796.0,322228.5899999975
+Clothing,Gloves,6332.0,113407.58999999991
+Clothing,Shorts,4913.0,186624.82000000004
+Clothing,Vests,3405.0,123124.35999999996
+Clothing,Caps,3361.0,17299.57000000002
+Clothing,Tights,2541.0,112247.28000000022
+Clothing,Socks,2514.0,13261.570000000014
+Clothing,Bib-Shorts,1702.0,91155.58000000015
+Components,Road Frames,6709.0,2266342.4099999764
+Components,Mountain Frames,6407.0,2548303.4400000395
+Components,Wheels,3086.0,400122.88999999984
+Components,Handlebars,2374.0,102983.4000000003
+Components,Pedals,2257.0,84925.42999999956
+Components,Touring Frames,2110.0,925666.6499999951
+Components,Saddles,1295.0,33689.900000000074
+Components,Derailleurs,687.0,41456.280000000035
+Components,Brakes,655.0,41736.71000000004
+Components,Cranksets,625.0,115137.84999999993

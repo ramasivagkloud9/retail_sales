@@ -30,7 +30,7 @@ def load_agg_category_csv():
     spark = SparkHelper.get_spark_session()
     curated_df = spark.read.csv(env.curated_layer_df_path, header=True).coalesce(1)
     curated_df = curated_df.groupBy("Category", "Subcategory").agg(F.sum("OrderQuantity").alias("OrderQuantity"), F.sum("SalesAmount").alias("SalesAmount")).orderBy(F.col("OrderQuantity").asc())
-    w2 = Window.partitionBy("Category").orderBy(F.col("OrderQuantity"))
+    w2 = Window.partitionBy("Category").orderBy(F.col("OrderQuantity").desc())
     curated_df= curated_df.withColumn("row", F.row_number().over(w2)) \
         .filter(F.col("row") <11).drop("row")
     return curated_df
