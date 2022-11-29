@@ -10,24 +10,29 @@ from helpers.hive_helper import HiveHelper
 import pyspark.sql.functions as F
 
 import env
+from pyspark.sql.window import Window
 
 def load_csv():
     spark = SparkHelper.get_spark_session()
     curated_df = spark.read.csv(env.cleansed_layer_df_path, header=True).coalesce(1)
     curated_df = curated_df.withColumn('DiscountAmount', F.when(F.col('DiscountAmount') == 0, "N").otherwise("Y")) \
+                .withColumn("salesprice-freight-taxes-promotion", F.col("SalesAmount") - ( F.col("TaxAmount") + F.col("Freight") )) \
                 .withColumnRenamed('DiscountAmount', 'Discount_present')
     return curated_df
 
 def load_agg_region_csv():
     spark = SparkHelper.get_spark_session()
     curated_df = spark.read.csv(env.curated_layer_df_path, header=True).coalesce(1)
-    curated_df = curated_df.groupBy("SalesRegion").agg(F.sum("OrderQuantity").alias("OrderQuantity"))
+    curated_df = curated_df.groupBy("Category").agg(F.sum("OrderQuantity").alias("OrderQuantity"), F.sum("SalesAmount").alias("SalesAmount")).orderBy(F.col("OrderQuantity").desc())
     return curated_df
 
 def load_agg_category_csv():
     spark = SparkHelper.get_spark_session()
     curated_df = spark.read.csv(env.curated_layer_df_path, header=True).coalesce(1)
-    curated_df = curated_df.groupBy("Category").agg(F.sum("OrderQuantity").alias("OrderQuantity"))
+    curated_df = curated_df.groupBy("Category", "Subcategory").agg(F.sum("OrderQuantity").alias("OrderQuantity"), F.sum("SalesAmount").alias("SalesAmount")).orderBy(F.col("OrderQuantity").asc())
+    w2 = Window.partitionBy("Category").orderBy(F.col("OrderQuantity"))
+    curated_df= curated_df.withColumn("row", F.row_number().over(w2)) \
+        .filter(F.col("row") <11).drop("row")
     return curated_df
 
 def to_local(df):

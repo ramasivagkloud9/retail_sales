@@ -17,7 +17,7 @@ def load_csv():
         .withColumn("Duedate", F.to_date("Duedate", "M/d/yyyy")) \
         .withColumn("Shipdate", F.to_date("Shipdate", "M/d/yyyy"))
     cleansed_df = cleansed_df.select(F.col("OrderNumber"),
-                    F.split(F.col("ProductName"), ",").getItem(0).alias("ProductName"),
+                    F.col("ProductName"),
                     F.col("Color"),
                     F.col("Category"),
                     F.col("Subcategory"),
@@ -31,10 +31,9 @@ def load_csv():
                     F.col("UnitPrice"),
                     F.col("SalesAmount"),
                     F.col("DiscountAmount"),
-                    F.col("TaxAmount"))
+                    F.col("TaxAmount"),
+                    F.col("Freight"))
     cleansed_df = cleansed_df\
-        .withColumn("Category", F.concat_ws(' - ',"Category","Subcategory")) \
-        .drop("Subcategory")\
         .withColumn('OrderQuantity', F.regexp_replace('OrderQuantity', 'Nan', '1')) \
         .withColumn('OrderQuantity', F.col('OrderQuantity').cast('int')) \
         .withColumn("ListPrice", F.round("ListPrice", 2)) \
@@ -42,7 +41,10 @@ def load_csv():
         .withColumn("SalesAmount", F.round("SalesAmount", 2)) \
         .withColumn("DiscountAmount", F.round("DiscountAmount", 2)) \
         .withColumn("TaxAmount", F.round("TaxAmount", 2)) \
+        .withColumn("Freight", F.round("Freight", 2)) \
         .na.fill("NA")
+    # .withColumn("Category", F.concat_ws(' - ', "Category", "Subcategory")) \
+    #     .drop("Subcategory") \
     return cleansed_df
 
 def to_local(df):
